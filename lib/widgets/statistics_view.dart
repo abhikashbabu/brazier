@@ -876,6 +876,7 @@ class StatisticsView extends StatelessWidget {
                                 'Goal: ${categoryGoalRate.toStringAsFixed(2)} €/mo',
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   fontWeight: FontWeight.w600,
+                                  color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade700,
                                 ),
                               ),
                             ),
@@ -907,7 +908,7 @@ class StatisticsView extends StatelessWidget {
                                 '${categoryUsedRate.toStringAsFixed(2)} € / mo',
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: fireOrange,
+                                  color: null,
                                 ),
                               ),
                             ),

@@ -488,7 +488,7 @@ class _ReviewCardContent extends StatelessWidget {
                             '${item.price.toStringAsFixed(2)} €',
                             style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: fireOrange,
+                              color: null,
                             ),
                           ),
                         ],
@@ -561,7 +561,7 @@ class _ReviewCardContent extends StatelessWidget {
                                 const Row(
                                   children: [
                                     Icon(
-                                      Icons.trending_down,
+                                      Icons.trending_up,
                                       size: 16,
                                       color: fireOrange,
                                     ),
