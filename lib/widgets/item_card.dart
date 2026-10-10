@@ -829,7 +829,6 @@ class CompactItemCard extends StatelessWidget {
                     '${item.price.toStringAsFixed(2)} €',
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: fireOrange,
                     ),
                   ),
                 ),
@@ -887,7 +886,7 @@ class CompactItemCard extends StatelessWidget {
                           : 'N/A',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: fireOrange,
+                        color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade700,
                       ),
                     ),
                     // Month Numbers
@@ -895,7 +894,7 @@ class CompactItemCard extends StatelessWidget {
                       '${item.usedDurationMonths}/${item.goalDurationMonths} mo',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade700,
+                        color: item.isGoalReached ? fireOrange : null,
                       ),
                     ),
                   ],
