@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'models/item.dart';
 import 'theme/app_theme.dart';
 import 'widgets/category_manager_dialog.dart';
+import 'widgets/floating_nav_bar.dart';
 import 'widgets/item_dialog.dart';
 import 'widgets/items_view.dart';
 import 'widgets/review_view.dart';
@@ -482,6 +483,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final pendingCount = _pendingReviewCount;
 
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         backgroundColor: theme.colorScheme.surface,
         scrolledUnderElevation: 0.0,
@@ -526,6 +528,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: SafeArea(
+        bottom: false,
         child: IndexedStack(
           index: _currentTabIndex,
           children: [
@@ -570,38 +573,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: FloatingNavBar(
         selectedIndex: _currentTabIndex,
         onDestinationSelected: (index) {
           setState(() {
             _currentTabIndex = index;
           });
         },
-        destinations: [
-          const NavigationDestination(
-            icon: Icon(Icons.inventory_2_outlined),
-            selectedIcon: Icon(Icons.inventory_2),
-            label: 'Items',
-          ),
-          NavigationDestination(
-            icon: Badge(
-              isLabelVisible: pendingCount > 0,
-              label: Text('$pendingCount'),
-              child: const Icon(Icons.rate_review_outlined),
-            ),
-            selectedIcon: Badge(
-              isLabelVisible: pendingCount > 0,
-              label: Text('$pendingCount'),
-              child: const Icon(Icons.rate_review),
-            ),
-            label: 'Review',
-          ),
-          const NavigationDestination(
-            icon: Icon(Icons.analytics_outlined),
-            selectedIcon: Icon(Icons.analytics),
-            label: 'Statistics',
-          ),
-        ],
+        pendingReviewCount: pendingCount,
       ),
       floatingActionButton: _currentTabIndex == 0
           ? FloatingActionButton.extended(

@@ -130,9 +130,10 @@ class _ReviewViewState extends State<ReviewView> {
 
     final isSwipingRight = horizontalDrag > 40;
     final isSwipingLeft = horizontalDrag < -40;
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: EdgeInsets.fromLTRB(16, 8, 16, bottomInset + 16),
       child: Column(
         children: [
           // Header info
