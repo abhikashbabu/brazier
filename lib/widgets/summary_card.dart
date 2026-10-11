@@ -62,13 +62,13 @@ class SummaryCard extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    Text(
-                      'Overview Summary',
-                      maxLines: 1,
+                    Flexible( // or Flexible
+                      child: Text('Overview Summary',
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.95),
-                        fontWeight: FontWeight.bold,
+                          color: Colors.white.withValues(alpha: 0.95),
+                          fontWeight: FontWeight.bold,),
                       ),
                     ),
                     if (onTap != null) ...[
