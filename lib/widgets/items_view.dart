@@ -248,7 +248,7 @@ class _ItemsViewState extends State<ItemsView> {
                     if (crossAxisCount == 1) {
                       return ReorderableListView.builder(
                         itemCount: widget.items.length,
-                        padding: const EdgeInsets.only(bottom: 80),
+                        padding: const EdgeInsets.only(bottom: 100),
                         // ignore: deprecated_member_use
                         onReorder: (oldIndex, newIndex) {
                           widget.onReorderItems(oldIndex, newIndex);
@@ -266,7 +266,7 @@ class _ItemsViewState extends State<ItemsView> {
 
                       return GridView.builder(
                         itemCount: widget.items.length,
-                        padding: const EdgeInsets.only(left: 12, right: 12, bottom: 80, top: 4),
+                        padding: const EdgeInsets.only(left: 12, right: 12, bottom: 150, top: 4),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: crossAxisCount,
                           mainAxisExtent: _isCompactView ? 95 : 240,
