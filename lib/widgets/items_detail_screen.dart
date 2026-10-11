@@ -48,7 +48,7 @@ class ItemsDetailScreen extends StatelessWidget {
                 title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -105,9 +105,8 @@ class ItemsDetailScreen extends StatelessWidget {
                               item.name,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
                               ),
                             ),
                           ),

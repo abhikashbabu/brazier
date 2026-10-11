@@ -69,24 +69,36 @@ class _BrazierAppState extends State<BrazierApp> {
         useMaterial3: true,
         colorScheme: lightColorScheme,
         scaffoldBackgroundColor: lightColorScheme.surface,
+        textTheme: AppTheme.createTextTheme(ThemeData.light().textTheme),
         appBarTheme: AppBarTheme(
           centerTitle: false,
           elevation: 0,
           scrolledUnderElevation: 0.0,
           surfaceTintColor: Colors.transparent,
           backgroundColor: lightColorScheme.surface,
+          titleTextStyle: AppTheme.funnelDisplay(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: lightColorScheme.onSurface,
+          ),
         ),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
         colorScheme: darkColorScheme,
         scaffoldBackgroundColor: darkColorScheme.surface,
+        textTheme: AppTheme.createTextTheme(ThemeData.dark().textTheme),
         appBarTheme: AppBarTheme(
           centerTitle: false,
           elevation: 0,
           scrolledUnderElevation: 0.0,
           surfaceTintColor: Colors.transparent,
           backgroundColor: darkColorScheme.surface,
+          titleTextStyle: AppTheme.funnelDisplay(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: darkColorScheme.onSurface,
+          ),
         ),
       ),
       home: HomeScreen(
@@ -490,7 +502,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _appBarTitle,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.onSurface,
                 ),

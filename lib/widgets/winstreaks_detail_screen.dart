@@ -23,13 +23,13 @@ class WinstreaksDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.local_fire_department, color: fireOrange),
-            SizedBox(width: 8),
+            const Icon(Icons.local_fire_department, color: fireOrange),
+            const SizedBox(width: 8),
             Text(
               'Usage Winstreaks',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -112,9 +112,8 @@ class WinstreaksDetailScreen extends StatelessWidget {
                                       item.name,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
+                                      style: theme.textTheme.titleSmall?.copyWith(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 13,
                                       ),
                                     ),
                                   ),

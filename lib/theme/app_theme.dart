@@ -1,4 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class AppTheme {
+  static const String funnelDisplayFont = 'Funnel Display';
+
+  /// Builds the application TextTheme using Funnel Display for big text and titles,
+  /// and Raleway for all other text (body, labels, captions, buttons, etc.).
+  static TextTheme createTextTheme(TextTheme baseTextTheme) {
+    // 1. Raleway for base text theme (body, labels, etc.)
+    final ralewayTheme = GoogleFonts.ralewayTextTheme(baseTextTheme);
+
+    // 2. Helper to apply Funnel Display font to title & big text styles
+    TextStyle applyFunnelDisplay(TextStyle? original) {
+      if (original == null) {
+        return const TextStyle(
+          fontFamily: funnelDisplayFont,
+          fontFamilyFallback: ['Raleway', 'sans-serif'],
+        );
+      }
+      return original.copyWith(
+        fontFamily: funnelDisplayFont,
+        fontFamilyFallback: [
+          if (ralewayTheme.bodyMedium?.fontFamily != null)
+            ralewayTheme.bodyMedium!.fontFamily!,
+          'Raleway',
+          'sans-serif',
+        ],
+      );
+    }
+
+    return ralewayTheme.copyWith(
+      // Big text (Display & Headline)
+      displayLarge: applyFunnelDisplay(ralewayTheme.displayLarge),
+      displayMedium: applyFunnelDisplay(ralewayTheme.displayMedium),
+      displaySmall: applyFunnelDisplay(ralewayTheme.displaySmall),
+      headlineLarge: applyFunnelDisplay(ralewayTheme.headlineLarge),
+      headlineMedium: applyFunnelDisplay(ralewayTheme.headlineMedium),
+      headlineSmall: applyFunnelDisplay(ralewayTheme.headlineSmall),
+
+      // Titles
+      titleLarge: applyFunnelDisplay(ralewayTheme.titleLarge),
+      titleMedium: applyFunnelDisplay(ralewayTheme.titleMedium),
+      titleSmall: applyFunnelDisplay(ralewayTheme.titleSmall),
+    );
+  }
+
+  /// Helper to generate Funnel Display style for big text / titles
+  static TextStyle funnelDisplay({
+    TextStyle? style,
+    Color? color,
+    double? fontSize,
+    FontWeight? fontWeight,
+    double? letterSpacing,
+  }) {
+    final base = style ?? const TextStyle();
+    return base.copyWith(
+      fontFamily: funnelDisplayFont,
+      fontFamilyFallback: const ['Raleway', 'sans-serif'],
+      color: color,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      letterSpacing: letterSpacing,
+    );
+  }
+
+  /// Helper to generate Raleway style for general text
+  static TextStyle raleway({
+    TextStyle? style,
+    Color? color,
+    double? fontSize,
+    FontWeight? fontWeight,
+    double? letterSpacing,
+  }) {
+    return GoogleFonts.raleway(
+      textStyle: style,
+      color: color,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      letterSpacing: letterSpacing,
+    );
+  }
+}
 
 class AppColors {
   static const Color primaryOrange = Color(0xFF4F3BD1);

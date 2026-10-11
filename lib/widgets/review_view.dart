@@ -276,12 +276,11 @@ class _ReviewViewState extends State<ReviewView> {
                                         borderRadius: BorderRadius.circular(12),
                                         color: fireOrange.withValues(alpha: 0.2),
                                       ),
-                                      child: const Text(
+                                      child: Text(
                                         'USED (+1 mo)',
-                                        style: TextStyle(
+                                        style: theme.textTheme.titleLarge?.copyWith(
                                           color: fireOrange,
                                           fontWeight: FontWeight.w900,
-                                          fontSize: 20,
                                           letterSpacing: 1.2,
                                         ),
                                       ),
@@ -303,12 +302,11 @@ class _ReviewViewState extends State<ReviewView> {
                                         borderRadius: BorderRadius.circular(12),
                                         color: darkSlateBlue.withValues(alpha: 0.85),
                                       ),
-                                      child: const Text(
+                                      child: Text(
                                         'NOT USED',
-                                        style: TextStyle(
-                                          color: Color(0xFFCBD5E1),
+                                        style: theme.textTheme.titleLarge?.copyWith(
+                                          color: const Color(0xFFCBD5E1),
                                           fontWeight: FontWeight.w900,
-                                          fontSize: 20,
                                           letterSpacing: 1.2,
                                         ),
                                       ),

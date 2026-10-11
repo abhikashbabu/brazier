@@ -145,10 +145,9 @@ class SummaryCard extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         '${totalGoalPerMonth.toStringAsFixed(2)} € / mo',
-                        style: const TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
                         ),
                       ),
                     ),
@@ -180,10 +179,9 @@ class SummaryCard extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         '${totalUsedPerMonth.toStringAsFixed(2)} € / mo',
-                        style: const TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
                         ),
                       ),
                     ),

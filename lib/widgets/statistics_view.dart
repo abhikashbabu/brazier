@@ -485,6 +485,7 @@ class _StatusStatBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -502,8 +503,7 @@ class _StatusStatBox extends StatelessWidget {
               children: [
                 Text(
                   '$count',
-                  style: TextStyle(
-                    fontSize: 20,
+                  style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: color,
                   ),
