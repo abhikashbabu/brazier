@@ -105,7 +105,7 @@ class _CategoryManagerDialogState extends State<CategoryManagerDialog> {
                     ),
                     title: Text(
                       cat.displayName,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
