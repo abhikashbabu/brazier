@@ -162,7 +162,7 @@ class StatisticsView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: LinearProgressIndicator(
                         value: items.isNotEmpty ? reachedGoals.length / items.length : 0.0,
-                        minHeight: 10,
+                        minHeight: 6,
                         backgroundColor: isDarkMode ? const Color(0xFF28303F) : theme.colorScheme.surfaceContainerHighest,
                         valueColor: const AlwaysStoppedAnimation<Color>(fireOrange),
                       ),

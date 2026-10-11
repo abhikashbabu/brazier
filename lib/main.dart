@@ -597,7 +597,7 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Review',
           ),
           const NavigationDestination(
-            icon: Icon(Icons.bar_chart_rounded),
+            icon: Icon(Icons.analytics_outlined),
             selectedIcon: Icon(Icons.analytics),
             label: 'Statistics',
           ),
