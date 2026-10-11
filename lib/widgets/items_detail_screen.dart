@@ -149,9 +149,9 @@ class ItemsDetailScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(4),
                               child: LinearProgressIndicator(
                                 value: priceRatio,
-                                minHeight: 8,
+                                minHeight: 6,
                                 backgroundColor: isDarkMode ? const Color(0xFF28303F) : theme.colorScheme.surfaceContainerHighest,
-                                valueColor: const AlwaysStoppedAnimation<Color>(fireOrange),
+                                valueColor: null,
                               ),
                             ),
                           ),
@@ -164,7 +164,7 @@ class ItemsDetailScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
-                                color: theme.colorScheme.onSurface,
+                                color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade700,
                               ),
                             ),
                           ),
@@ -193,56 +193,75 @@ class ItemsDetailScreen extends StatelessWidget {
                                 final maxMarkerLeft = max(0.0, totalWidth - 8);
                                 final markerLeft = maxMarkerLeft > 0 ? (goalLeft - 4).clamp(0.0, maxMarkerLeft) : 0.0;
 
-                                return Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    // 1. Gray Background Track (100% width)
-                                    Container(
-                                      height: 8,
-                                      decoration: BoxDecoration(
-                                        color: isDarkMode ? const Color(0xFF28303F) : theme.colorScheme.surfaceContainerHighest,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
-
-                                    // 2. Current Used Monthly Cost Fill Bar
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: LinearProgressIndicator(
-                                        value: usedRatio,
-                                        minHeight: 8,
-                                        backgroundColor: Colors.transparent,
-                                        valueColor: const AlwaysStoppedAnimation<Color>(fireOrange),
-                                      ),
-                                    ),
-
-                                    // 3. Target Goal Indicator Segment (8px Notch ALWAYS ON TOP)
-                                    Positioned(
-                                      left: markerLeft,
-                                      child: Tooltip(
-                                        message: 'Target Goal (${item.goalDurationMonths} mo): ${item.goalPricePerMonth.toStringAsFixed(2)} €/mo',
-                                        child: Container(
-                                          width: 8,
-                                          height: 8,
+                                return SizedBox(
+                                  height: 8, // height of the tallest element (the dot)
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      // 1. Gray background track (100% width), vertically centered
+                                      Positioned(
+                                        left: 0,
+                                        right: 0,
+                                        top: 1,
+                                        height: 6,
+                                        child: DecoratedBox(
                                           decoration: BoxDecoration(
-                                            color: Colors.white,
+                                            color: isDarkMode
+                                                ? const Color(0xFF28303F)
+                                                : theme.colorScheme.surfaceContainerHighest,
                                             borderRadius: BorderRadius.circular(4),
-                                            border: Border.all(
-                                              color: fireOrange,
-                                              width: 1.5,
-                                            ),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Colors.black38,
-                                                blurRadius: 3,
-                                                offset: Offset(0, 1),
-                                              ),
-                                            ],
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+
+                                      // 2. Used monthly cost fill, same position and size as the track
+                                      Positioned(
+                                        left: 0,
+                                        right: 0,
+                                        top: 1,
+                                        height: 6,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(4),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: FractionallySizedBox(
+                                              widthFactor: usedRatio.clamp(0.0, 1.0),
+                                              heightFactor: 1,
+                                              child: const DecoratedBox(
+                                                decoration: BoxDecoration(gradient: AppGradients.flameGradient),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 3. Target goal marker, always on top, fills the full 8px height
+                                      Positioned(
+                                        left: markerLeft,
+                                        top: 0,
+                                        child: Tooltip(
+                                          message:
+                                          'Target Goal (${item.goalDurationMonths} mo): ${item.goalPricePerMonth.toStringAsFixed(2)} €/mo',
+                                          child: Container(
+                                            width: 8,
+                                            height: 8,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(4),
+                                              border: Border.all(color: AppColors.flameOrange, width: 1.5),
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  color: Colors.black38,
+                                                  blurRadius: 3,
+                                                  offset: Offset(0, 1),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 );
                               },
                             ),
@@ -255,10 +274,10 @@ class ItemsDetailScreen extends StatelessWidget {
                                   ? '${item.usedPricePerMonth.toStringAsFixed(2)} €/mo'
                                   : '${item.goalPricePerMonth.toStringAsFixed(2)} €/mo',
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
-                                color: fireOrange,
+                                color: item.isGoalReached? fireOrange:null,
                               ),
                             ),
                           ),

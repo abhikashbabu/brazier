@@ -523,7 +523,7 @@ class ItemCard extends StatelessWidget {
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
-                                  color: theme.colorScheme.onSurface,
+                                  color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
                                 ),
                               ),
                             ),
@@ -572,7 +572,7 @@ class ItemCard extends StatelessWidget {
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
-                                  color: fireOrange,
+                                  color: null,
                                 ),
                               ),
                             ),
