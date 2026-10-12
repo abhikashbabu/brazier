@@ -23,9 +23,35 @@ class ReviewView extends StatefulWidget {
   State<ReviewView> createState() => _ReviewViewState();
 }
 
-class _ReviewViewState extends State<ReviewView> {
+class _ReviewViewState extends State<ReviewView> with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   Offset _dragOffset = Offset.zero;
+
+  late AnimationController _animationController;
+  Animation<Offset>? _offsetAnimation;
+  bool _isAnimating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    _animationController.addListener(() {
+      if (_offsetAnimation != null) {
+        setState(() {
+          _dragOffset = _offsetAnimation!.value;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   List<Item> get _pendingItems {
     return widget.items
@@ -33,17 +59,70 @@ class _ReviewViewState extends State<ReviewView> {
         .toList();
   }
 
-  void _handleReview(Item item, bool used) {
-    widget.onReviewItem(item, used);
+  void _animateAndReview(Item item, bool used, {Offset? startOffset}) {
+    if (_isAnimating) return;
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final start = startOffset ?? _dragOffset;
+    final endX = used ? screenWidth * 1.3 : -screenWidth * 1.3;
+    final end = Offset(endX, start.dy);
+
     setState(() {
-      _dragOffset = Offset.zero;
-      if (_currentIndex >= _pendingItems.length - 1) {
-        _currentIndex = max(0, _pendingItems.length - 2);
-      }
+      _isAnimating = true;
+    });
+
+    _offsetAnimation = Tween<Offset>(
+      begin: start,
+      end: end,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _animationController.forward(from: 0.0).then((_) {
+      if (!mounted) return;
+      widget.onReviewItem(item, used);
+      _animationController.reset();
+      setState(() {
+        _isAnimating = false;
+        _dragOffset = Offset.zero;
+        if (_currentIndex >= _pendingItems.length - 1) {
+          _currentIndex = max(0, _pendingItems.length - 2);
+        }
+      });
+    });
+  }
+
+  void _animateResetPosition() {
+    if (_isAnimating) return;
+
+    final start = _dragOffset;
+    if (start == Offset.zero) return;
+
+    setState(() {
+      _isAnimating = true;
+    });
+
+    _offsetAnimation = Tween<Offset>(
+      begin: start,
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutQuad,
+    ));
+
+    _animationController.forward(from: 0.0).then((_) {
+      if (!mounted) return;
+      _animationController.reset();
+      setState(() {
+        _isAnimating = false;
+        _dragOffset = Offset.zero;
+      });
     });
   }
 
   void _nextItem() {
+    if (_isAnimating) return;
     final pending = _pendingItems;
     if (pending.isEmpty) return;
     setState(() {
@@ -53,6 +132,7 @@ class _ReviewViewState extends State<ReviewView> {
   }
 
   void _previousItem() {
+    if (_isAnimating) return;
     final pending = _pendingItems;
     if (pending.isEmpty) return;
     setState(() {
@@ -215,14 +295,15 @@ class _ReviewViewState extends State<ReviewView> {
                   // Top Interactive Swipable Card
                   Listener(
                     onPointerSignal: (pointerSignal) {
+                      if (_isAnimating) return;
                       if (pointerSignal is PointerScrollEvent) {
                         final dx = pointerSignal.scrollDelta.dx;
                         final dy = pointerSignal.scrollDelta.dy;
 
                         if (dx > 30) {
-                          _handleReview(currentItem, true);
+                          _animateAndReview(currentItem, true);
                         } else if (dx < -30) {
-                          _handleReview(currentItem, false);
+                          _animateAndReview(currentItem, false);
                         } else if (dy > 30 || dy < -30) {
                           _nextItem();
                         }
@@ -230,28 +311,28 @@ class _ReviewViewState extends State<ReviewView> {
                     },
                     child: GestureDetector(
                       onPanUpdate: (details) {
+                        if (_isAnimating) return;
                         setState(() {
                           _dragOffset += details.delta;
                         });
                       },
                       onPanEnd: (_) {
+                        if (_isAnimating) return;
                         final dx = _dragOffset.dx;
                         final dy = _dragOffset.dy;
 
                         if (dx > screenWidth * 0.25) {
                           // Swiped Right -> Used!
-                          _handleReview(currentItem, true);
+                          _animateAndReview(currentItem, true);
                         } else if (dx < -screenWidth * 0.25) {
                           // Swiped Left -> Not Used!
-                          _handleReview(currentItem, false);
+                          _animateAndReview(currentItem, false);
                         } else if (dy < -80 || dy > 80) {
                           // Swiped Up/Down -> Next item
                           _nextItem();
                         } else {
                           // Reset card position
-                          setState(() {
-                            _dragOffset = Offset.zero;
-                          });
+                          _animateResetPosition();
                         }
                       },
                       child: Transform.translate(
@@ -343,7 +424,7 @@ class _ReviewViewState extends State<ReviewView> {
                       side: const BorderSide(color: Color(0xFF475569)),
                     ),
                   ),
-                  onPressed: () => _handleReview(currentItem, false),
+                  onPressed: _isAnimating ? null : () => _animateAndReview(currentItem, false),
                   icon: const Icon(Icons.close, size: 20),
                   label: const FittedBox(
                     fit: BoxFit.scaleDown,
@@ -361,13 +442,13 @@ class _ReviewViewState extends State<ReviewView> {
                 visualDensity: VisualDensity.compact,
                 tooltip: 'Previous Item',
                 icon: const Icon(Icons.arrow_upward, size: 20),
-                onPressed: _previousItem,
+                onPressed: _isAnimating ? null : _previousItem,
               ),
               IconButton.filledTonal(
                 visualDensity: VisualDensity.compact,
                 tooltip: 'Next Item (swipe up/down)',
                 icon: const Icon(Icons.arrow_downward, size: 20),
-                onPressed: _nextItem,
+                onPressed: _isAnimating ? null : _nextItem,
               ),
               const SizedBox(width: 4),
 
@@ -396,7 +477,7 @@ class _ReviewViewState extends State<ReviewView> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    onPressed: () => _handleReview(currentItem, true),
+                    onPressed: _isAnimating ? null : () => _animateAndReview(currentItem, true),
                     icon: const Icon(Icons.check, size: 20),
                     label: const FittedBox(
                       fit: BoxFit.scaleDown,
