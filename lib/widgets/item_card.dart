@@ -249,7 +249,9 @@ class ItemCard extends StatelessWidget {
                                     const Icon(Icons.check, color: fireOrange, size: 18),
                                     const SizedBox(width: 8),
                                     Text(
-                                      item.isDefaultUsed ? 'Currently Used (Auto)' : 'Currently Used (+1 mo)',
+                                      (enableDefaultAsUsedFeature && item.isDefaultUsed)
+                                          ? 'Currently Used (Auto)'
+                                          : 'Currently Used (+1 mo)',
                                       style: TextStyle(
                                         fontWeight: monthlyStatus == MonthlyReviewStatus.used
                                             ? FontWeight.bold
@@ -325,7 +327,9 @@ class ItemCard extends StatelessWidget {
                                   const SizedBox(width: 4),
                                   Text(
                                     monthlyStatus == MonthlyReviewStatus.used
-                                        ? (item.isDefaultUsed ? 'Currently used (Auto)' : 'Currently used')
+                                        ? ((enableDefaultAsUsedFeature && item.isDefaultUsed)
+                                            ? 'Currently used (Auto)'
+                                            : 'Currently used')
                                         : monthlyStatus == MonthlyReviewStatus.notUsed
                                             ? 'Not used'
                                             : 'Needs review',
@@ -708,7 +712,11 @@ class CompactItemCard extends StatelessWidget {
                         children: [
                           const Icon(Icons.check, color: fireOrange, size: 18),
                           const SizedBox(width: 8),
-                          Text(item.isDefaultUsed ? 'Currently Used (Auto)' : 'Currently Used (+1 mo)'),
+                          Text(
+                            (enableDefaultAsUsedFeature && item.isDefaultUsed)
+                                ? 'Currently Used (Auto)'
+                                : 'Currently Used (+1 mo)',
+                          ),
                         ],
                       ),
                     ),

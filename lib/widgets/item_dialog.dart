@@ -354,31 +354,32 @@ class _ItemDialogState extends State<ItemDialog> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-
-                // Default as Used Option
-                CheckboxListTile(
-                  value: _isDefaultUsed,
-                  onChanged: (val) {
-                    setState(() {
-                      _isDefaultUsed = val ?? false;
-                    });
-                  },
-                  contentPadding: EdgeInsets.zero,
-                  activeColor: theme.colorScheme.primary,
-                  title: const Text(
-                    'Default as used every month',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                  ),
-                  subtitle: Text(
-                    'Automatically marks this item as used every month without needing manual review',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                if (enableDefaultAsUsedFeature) ...[
+                  const SizedBox(height: 16),
+                  // Default as Used Option
+                  CheckboxListTile(
+                    value: _isDefaultUsed,
+                    onChanged: (val) {
+                      setState(() {
+                        _isDefaultUsed = val ?? false;
+                      });
+                    },
+                    contentPadding: EdgeInsets.zero,
+                    activeColor: theme.colorScheme.primary,
+                    title: const Text(
+                      'Default as used every month',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
+                    subtitle: Text(
+                      'Automatically marks this item as used every month without needing manual review',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                      ),
+                    ),
+                    controlAffinity: ListTileControlAffinity.leading,
                   ),
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
+                ],
                 const SizedBox(height: 12),
 
                 // Live Preview Card

@@ -153,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
         category: devicesCat,
         goalDurationMonths: 24,
         usedDurationMonths: 26,
-        isDefaultUsed: true,
+        isDefaultUsed: enableDefaultAsUsedFeature,
         usageStreak: 26,
       ),
       Item(
