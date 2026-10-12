@@ -233,9 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _categories.add(cat);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Added category "${cat.displayName}"')),
-    );
   }
 
   void _updateCategory(Category updatedCat) {
@@ -251,14 +248,10 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Updated category "${updatedCat.displayName}"')),
-    );
   }
 
   void _deleteCategory(String categoryId) {
     if (_categories.length <= 1) return;
-    final catToDelete = _categories.firstWhere((c) => c.id == categoryId);
 
     setState(() {
       _categories.removeWhere((c) => c.id == categoryId);
@@ -272,10 +265,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _selectedCategoryFilter = null;
       }
     });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Deleted category "${catToDelete.displayName}"')),
-    );
   }
 
   void _openCategoryManager() {
@@ -312,15 +301,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _items.add(newItem);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Added "${newItem.name}"'),
-        action: SnackBarAction(
-          label: 'DISMISS',
-          onPressed: () {},
-        ),
-      ),
-    );
   }
 
   void _editItem(Item updatedItem) {
@@ -330,29 +310,12 @@ class _HomeScreenState extends State<HomeScreen> {
         _items[index] = updatedItem;
       }
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Updated "${updatedItem.name}"')),
-    );
   }
 
   void _deleteItem(String id) {
-    final itemToDelete = _items.firstWhere((i) => i.id == id);
     setState(() {
       _items.removeWhere((i) => i.id == id);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Deleted "${itemToDelete.name}"'),
-        action: SnackBarAction(
-          label: 'UNDO',
-          onPressed: () {
-            setState(() {
-              _items.add(itemToDelete);
-            });
-          },
-        ),
-      ),
-    );
   }
 
   void _handleReviewItem(Item item, bool used) {
@@ -402,26 +365,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
-
-    String msg;
-    switch (newStatus) {
-      case MonthlyReviewStatus.used:
-        msg = 'Marked "${item.name}" as Currently Used (+1 mo, 🔥 streak updated!)';
-        break;
-      case MonthlyReviewStatus.notUsed:
-        msg = 'Marked "${item.name}" as Not Used (streak reset)';
-        break;
-      case MonthlyReviewStatus.pending:
-        msg = 'Reset "${item.name}" to Needs Review (reappeared in Review tab)';
-        break;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 2),
-        content: Text(msg),
-      ),
-    );
   }
 
   void _resetAllReviews() {
@@ -431,9 +374,6 @@ class _HomeScreenState extends State<HomeScreen> {
         item.currentMonthUsed = null;
       }
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Reset all monthly item reviews for testing.')),
-    );
   }
 
   void _openAddDialog() {
