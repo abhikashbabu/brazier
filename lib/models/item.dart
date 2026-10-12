@@ -45,6 +45,10 @@ class Category {
   int get hashCode => id.hashCode;
 }
 
+/// Global feature toggle to enable or disable the "Default as Used" feature across the application.
+/// Set to `false` to disable the option in UI dialogs and auto-sync behavior, or `true` to enable it.
+const bool enableDefaultAsUsedFeature = false;
+
 enum MonthlyReviewStatus {
   pending,
   used,
@@ -84,6 +88,7 @@ class Item {
 
   /// Automatically syncs monthly usage if [isDefaultUsed] is enabled.
   void checkAutoSyncDefaultUsed() {
+    if (!enableDefaultAsUsedFeature) return;
     if (isDefaultUsed && lastReviewedMonthKey != currentMonthKey) {
       if (lastReviewedMonthKey != null) {
         // A new month has arrived for a default-used item -> increment usage & streak
@@ -99,9 +104,11 @@ class Item {
 
   /// Returns the current month's review status.
   MonthlyReviewStatus get currentMonthlyStatus {
-    checkAutoSyncDefaultUsed();
-    if (isDefaultUsed) {
-      return MonthlyReviewStatus.used;
+    if (enableDefaultAsUsedFeature) {
+      checkAutoSyncDefaultUsed();
+      if (isDefaultUsed) {
+        return MonthlyReviewStatus.used;
+      }
     }
     if (lastReviewedMonthKey != currentMonthKey) {
       return MonthlyReviewStatus.pending;

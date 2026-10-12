@@ -153,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
         category: devicesCat,
         goalDurationMonths: 24,
         usedDurationMonths: 26,
-        isDefaultUsed: true,
+        isDefaultUsed: enableDefaultAsUsedFeature,
         usageStreak: 26,
       ),
       Item(
@@ -233,9 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _categories.add(cat);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Added category "${cat.displayName}"')),
-    );
   }
 
   void _updateCategory(Category updatedCat) {
@@ -251,14 +248,10 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Updated category "${updatedCat.displayName}"')),
-    );
   }
 
   void _deleteCategory(String categoryId) {
     if (_categories.length <= 1) return;
-    final catToDelete = _categories.firstWhere((c) => c.id == categoryId);
 
     setState(() {
       _categories.removeWhere((c) => c.id == categoryId);
@@ -272,10 +265,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _selectedCategoryFilter = null;
       }
     });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Deleted category "${catToDelete.displayName}"')),
-    );
   }
 
   void _openCategoryManager() {
@@ -312,15 +301,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _items.add(newItem);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Added "${newItem.name}"'),
-        action: SnackBarAction(
-          label: 'DISMISS',
-          onPressed: () {},
-        ),
-      ),
-    );
   }
 
   void _editItem(Item updatedItem) {
@@ -330,29 +310,12 @@ class _HomeScreenState extends State<HomeScreen> {
         _items[index] = updatedItem;
       }
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Updated "${updatedItem.name}"')),
-    );
   }
 
   void _deleteItem(String id) {
-    final itemToDelete = _items.firstWhere((i) => i.id == id);
     setState(() {
       _items.removeWhere((i) => i.id == id);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Deleted "${itemToDelete.name}"'),
-        action: SnackBarAction(
-          label: 'UNDO',
-          onPressed: () {
-            setState(() {
-              _items.add(itemToDelete);
-            });
-          },
-        ),
-      ),
-    );
   }
 
   void _handleReviewItem(Item item, bool used) {
@@ -362,78 +325,57 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _applyMonthlyStatusChange(Item current, MonthlyReviewStatus newStatus) {
+    final oldStatus = current.currentMonthlyStatus;
+
+    if (oldStatus == newStatus && !current.isDefaultUsed) return;
+
+    // Adjust usedDurationMonths and usageStreak depending on transition
+    if (oldStatus == MonthlyReviewStatus.used && newStatus != MonthlyReviewStatus.used) {
+      // Was used, now no longer used -> decrement duration and decrement streak
+      current.usedDurationMonths = max(0, current.usedDurationMonths - 1);
+      current.usageStreak = max(0, current.usageStreak - 1);
+    } else if (oldStatus != MonthlyReviewStatus.used && newStatus == MonthlyReviewStatus.used) {
+      // Was not used/pending, now used -> increment duration and increment streak
+      current.usedDurationMonths += 1;
+      current.usageStreak += 1;
+    }
+
+    // Update review status flags
+    switch (newStatus) {
+      case MonthlyReviewStatus.used:
+        current.lastReviewedMonthKey = Item.currentMonthKey;
+        current.currentMonthUsed = true;
+        break;
+      case MonthlyReviewStatus.notUsed:
+        current.lastReviewedMonthKey = Item.currentMonthKey;
+        current.currentMonthUsed = false;
+        current.usageStreak = 0; // Reset streak on explicitly marked not used
+        current.isDefaultUsed = false; // Disable auto-default on explicit override
+        break;
+      case MonthlyReviewStatus.pending:
+        current.lastReviewedMonthKey = null;
+        current.currentMonthUsed = null;
+        current.isDefaultUsed = false; // Disable auto-default on explicit override
+        break;
+    }
+  }
+
   void _updateMonthlyStatus(Item item, MonthlyReviewStatus newStatus) {
     setState(() {
       final index = _items.indexWhere((i) => i.id == item.id);
       if (index != -1) {
-        final current = _items[index];
-        final oldStatus = current.currentMonthlyStatus;
-
-        if (oldStatus == newStatus && !current.isDefaultUsed) return;
-
-        // Adjust usedDurationMonths and usageStreak depending on transition
-        if (oldStatus == MonthlyReviewStatus.used && newStatus != MonthlyReviewStatus.used) {
-          // Was used, now no longer used -> decrement duration and decrement streak
-          current.usedDurationMonths = max(0, current.usedDurationMonths - 1);
-          current.usageStreak = max(0, current.usageStreak - 1);
-        } else if (oldStatus != MonthlyReviewStatus.used && newStatus == MonthlyReviewStatus.used) {
-          // Was not used/pending, now used -> increment duration and increment streak
-          current.usedDurationMonths += 1;
-          current.usageStreak += 1;
-        }
-
-        // Update review status flags
-        switch (newStatus) {
-          case MonthlyReviewStatus.used:
-            current.lastReviewedMonthKey = Item.currentMonthKey;
-            current.currentMonthUsed = true;
-            break;
-          case MonthlyReviewStatus.notUsed:
-            current.lastReviewedMonthKey = Item.currentMonthKey;
-            current.currentMonthUsed = false;
-            current.usageStreak = 0; // Reset streak on explicitly marked not used
-            current.isDefaultUsed = false; // Disable auto-default on explicit override
-            break;
-          case MonthlyReviewStatus.pending:
-            current.lastReviewedMonthKey = null;
-            current.currentMonthUsed = null;
-            current.isDefaultUsed = false; // Disable auto-default on explicit override
-            break;
-        }
+        _applyMonthlyStatusChange(_items[index], newStatus);
       }
     });
-
-    String msg;
-    switch (newStatus) {
-      case MonthlyReviewStatus.used:
-        msg = 'Marked "${item.name}" as Currently Used (+1 mo, 🔥 streak updated!)';
-        break;
-      case MonthlyReviewStatus.notUsed:
-        msg = 'Marked "${item.name}" as Not Used (streak reset)';
-        break;
-      case MonthlyReviewStatus.pending:
-        msg = 'Reset "${item.name}" to Needs Review (reappeared in Review tab)';
-        break;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 2),
-        content: Text(msg),
-      ),
-    );
   }
 
   void _resetAllReviews() {
     setState(() {
       for (final item in _items) {
-        item.lastReviewedMonthKey = null;
-        item.currentMonthUsed = null;
+        _applyMonthlyStatusChange(item, MonthlyReviewStatus.pending);
       }
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Reset all monthly item reviews for testing.')),
-    );
   }
 
   void _openAddDialog() {

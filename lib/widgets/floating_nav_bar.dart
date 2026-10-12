@@ -15,7 +15,7 @@ class FloatingNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: false,
+
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         child: Container(
@@ -38,7 +38,7 @@ class FloatingNavBar extends StatelessWidget {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: NavigationBar(
-                height: 68,
+                height: 64,
                 elevation: 0,
                 backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha:0.5),
                 surfaceTintColor: Colors.transparent,
