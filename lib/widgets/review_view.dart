@@ -1,11 +1,14 @@
 import 'dart:math';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/item.dart';
 import '../theme/app_theme.dart';
 
 const Color fireOrange = AppColors.fireOrange; // Single unified Fire Orange Accent from AppTheme
+
+enum _SwipeThresholdState { none, used, notUsed }
 
 class ReviewView extends StatefulWidget {
   final List<Item> items;
@@ -26,6 +29,7 @@ class ReviewView extends StatefulWidget {
 class _ReviewViewState extends State<ReviewView> with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   Offset _dragOffset = Offset.zero;
+  _SwipeThresholdState _lastThresholdState = _SwipeThresholdState.none;
 
   late AnimationController _animationController;
   Animation<Offset>? _offsetAnimation;
@@ -62,6 +66,7 @@ class _ReviewViewState extends State<ReviewView> with SingleTickerProviderStateM
   void _animateAndReview(Item item, bool used, {Offset? startOffset}) {
     if (_isAnimating) return;
 
+    _lastThresholdState = _SwipeThresholdState.none;
     final screenWidth = MediaQuery.of(context).size.width;
     final start = startOffset ?? _dragOffset;
     final endX = used ? screenWidth * 1.3 : -screenWidth * 1.3;
@@ -117,6 +122,7 @@ class _ReviewViewState extends State<ReviewView> with SingleTickerProviderStateM
       setState(() {
         _isAnimating = false;
         _dragOffset = Offset.zero;
+        _lastThresholdState = _SwipeThresholdState.none;
       });
     });
   }
@@ -128,6 +134,7 @@ class _ReviewViewState extends State<ReviewView> with SingleTickerProviderStateM
     setState(() {
       _currentIndex = (_currentIndex + 1) % pending.length;
       _dragOffset = Offset.zero;
+      _lastThresholdState = _SwipeThresholdState.none;
     });
   }
 
@@ -138,6 +145,7 @@ class _ReviewViewState extends State<ReviewView> with SingleTickerProviderStateM
     setState(() {
       _currentIndex = (_currentIndex - 1 + pending.length) % pending.length;
       _dragOffset = Offset.zero;
+      _lastThresholdState = _SwipeThresholdState.none;
     });
   }
 
@@ -315,9 +323,28 @@ class _ReviewViewState extends State<ReviewView> with SingleTickerProviderStateM
                         setState(() {
                           _dragOffset += details.delta;
                         });
+
+                        // Haptic vibration feedback on threshold crossing
+                        final threshold = screenWidth * 0.25;
+                        _SwipeThresholdState currentThresholdState = _SwipeThresholdState.none;
+                        if (_dragOffset.dx > threshold) {
+                          currentThresholdState = _SwipeThresholdState.used;
+                        } else if (_dragOffset.dx < -threshold) {
+                          currentThresholdState = _SwipeThresholdState.notUsed;
+                        }
+
+                        if (currentThresholdState != _lastThresholdState) {
+                          if (currentThresholdState != _SwipeThresholdState.none) {
+                            HapticFeedback.mediumImpact();
+                          } else {
+                            HapticFeedback.lightImpact();
+                          }
+                          _lastThresholdState = currentThresholdState;
+                        }
                       },
                       onPanEnd: (_) {
                         if (_isAnimating) return;
+                        _lastThresholdState = _SwipeThresholdState.none;
                         final dx = _dragOffset.dx;
                         final dy = _dragOffset.dy;
 

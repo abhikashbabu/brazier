@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/item.dart';
 import 'item_card.dart';
@@ -72,6 +73,7 @@ class _ItemsViewState extends State<ItemsView> {
       key: ValueKey('drag_${item.id}'),
       onWillAcceptWithDetails: (details) => details.data != index,
       onAcceptWithDetails: (details) {
+        HapticFeedback.selectionClick();
         widget.onReorderItems(details.data, index);
       },
       builder: (context, candidateData, rejectedData) {
@@ -79,6 +81,9 @@ class _ItemsViewState extends State<ItemsView> {
 
         return LongPressDraggable<int>(
           data: index,
+          onDragStarted: () {
+            HapticFeedback.mediumImpact();
+          },
           feedback: Material(
             elevation: 8,
             borderRadius: BorderRadius.circular(16),
@@ -249,8 +254,12 @@ class _ItemsViewState extends State<ItemsView> {
                       return ReorderableListView.builder(
                         itemCount: widget.items.length,
                         padding: const EdgeInsets.only(bottom: 100),
+                        onReorderStart: (_) {
+                          HapticFeedback.mediumImpact();
+                        },
                         // ignore: deprecated_member_use
                         onReorder: (oldIndex, newIndex) {
+                          HapticFeedback.selectionClick();
                           widget.onReorderItems(oldIndex, newIndex);
                         },
                         itemBuilder: (context, index) {
