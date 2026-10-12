@@ -109,7 +109,7 @@ class _ReviewViewState extends State<ReviewView> {
               OutlinedButton.icon(
                 onPressed: widget.onResetAllReviews,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Reset Monthly Reviews (Testing)'),
+                label: const Text('Reset Monthly Reviews'),
               ),
             ],
           ),

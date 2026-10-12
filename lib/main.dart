@@ -325,44 +325,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _applyMonthlyStatusChange(Item current, MonthlyReviewStatus newStatus) {
+    final oldStatus = current.currentMonthlyStatus;
+
+    if (oldStatus == newStatus && !current.isDefaultUsed) return;
+
+    // Adjust usedDurationMonths and usageStreak depending on transition
+    if (oldStatus == MonthlyReviewStatus.used && newStatus != MonthlyReviewStatus.used) {
+      // Was used, now no longer used -> decrement duration and decrement streak
+      current.usedDurationMonths = max(0, current.usedDurationMonths - 1);
+      current.usageStreak = max(0, current.usageStreak - 1);
+    } else if (oldStatus != MonthlyReviewStatus.used && newStatus == MonthlyReviewStatus.used) {
+      // Was not used/pending, now used -> increment duration and increment streak
+      current.usedDurationMonths += 1;
+      current.usageStreak += 1;
+    }
+
+    // Update review status flags
+    switch (newStatus) {
+      case MonthlyReviewStatus.used:
+        current.lastReviewedMonthKey = Item.currentMonthKey;
+        current.currentMonthUsed = true;
+        break;
+      case MonthlyReviewStatus.notUsed:
+        current.lastReviewedMonthKey = Item.currentMonthKey;
+        current.currentMonthUsed = false;
+        current.usageStreak = 0; // Reset streak on explicitly marked not used
+        current.isDefaultUsed = false; // Disable auto-default on explicit override
+        break;
+      case MonthlyReviewStatus.pending:
+        current.lastReviewedMonthKey = null;
+        current.currentMonthUsed = null;
+        current.isDefaultUsed = false; // Disable auto-default on explicit override
+        break;
+    }
+  }
+
   void _updateMonthlyStatus(Item item, MonthlyReviewStatus newStatus) {
     setState(() {
       final index = _items.indexWhere((i) => i.id == item.id);
       if (index != -1) {
-        final current = _items[index];
-        final oldStatus = current.currentMonthlyStatus;
-
-        if (oldStatus == newStatus && !current.isDefaultUsed) return;
-
-        // Adjust usedDurationMonths and usageStreak depending on transition
-        if (oldStatus == MonthlyReviewStatus.used && newStatus != MonthlyReviewStatus.used) {
-          // Was used, now no longer used -> decrement duration and decrement streak
-          current.usedDurationMonths = max(0, current.usedDurationMonths - 1);
-          current.usageStreak = max(0, current.usageStreak - 1);
-        } else if (oldStatus != MonthlyReviewStatus.used && newStatus == MonthlyReviewStatus.used) {
-          // Was not used/pending, now used -> increment duration and increment streak
-          current.usedDurationMonths += 1;
-          current.usageStreak += 1;
-        }
-
-        // Update review status flags
-        switch (newStatus) {
-          case MonthlyReviewStatus.used:
-            current.lastReviewedMonthKey = Item.currentMonthKey;
-            current.currentMonthUsed = true;
-            break;
-          case MonthlyReviewStatus.notUsed:
-            current.lastReviewedMonthKey = Item.currentMonthKey;
-            current.currentMonthUsed = false;
-            current.usageStreak = 0; // Reset streak on explicitly marked not used
-            current.isDefaultUsed = false; // Disable auto-default on explicit override
-            break;
-          case MonthlyReviewStatus.pending:
-            current.lastReviewedMonthKey = null;
-            current.currentMonthUsed = null;
-            current.isDefaultUsed = false; // Disable auto-default on explicit override
-            break;
-        }
+        _applyMonthlyStatusChange(_items[index], newStatus);
       }
     });
   }
@@ -370,8 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _resetAllReviews() {
     setState(() {
       for (final item in _items) {
-        item.lastReviewedMonthKey = null;
-        item.currentMonthUsed = null;
+        _applyMonthlyStatusChange(item, MonthlyReviewStatus.pending);
       }
     });
   }
