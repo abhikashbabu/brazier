@@ -40,7 +40,7 @@ class FloatingNavBar extends StatelessWidget {
               child: NavigationBar(
                 height: 64,
                 elevation: 0,
-                backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha:0.5),
+                backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha:0.3),
                 surfaceTintColor: Colors.transparent,
                 indicatorColor: Theme.of(context).colorScheme.primaryContainer,
                 indicatorShape: RoundedRectangleBorder(

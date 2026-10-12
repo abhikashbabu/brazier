@@ -253,7 +253,7 @@ class _ItemsViewState extends State<ItemsView> {
                     if (crossAxisCount == 1) {
                       return ReorderableListView.builder(
                         itemCount: widget.items.length,
-                        padding: const EdgeInsets.only(bottom: 100),
+                        padding: const EdgeInsets.only(bottom: 180),
                         onReorderStart: (_) {
                           HapticFeedback.mediumImpact();
                         },

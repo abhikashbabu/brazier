@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'models/item.dart';
+import 'services/storage_service.dart';
 import 'theme/app_theme.dart';
 import 'widgets/category_manager_dialog.dart';
 import 'widgets/floating_nav_bar.dart';
@@ -12,6 +13,7 @@ import 'widgets/settings_screen.dart';
 import 'widgets/statistics_view.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const BrazierApp());
 }
 
@@ -25,10 +27,26 @@ class BrazierApp extends StatefulWidget {
 class _BrazierAppState extends State<BrazierApp> {
   ThemeMode _themeMode = ThemeMode.system;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadThemeMode();
+  }
+
+  Future<void> _loadThemeMode() async {
+    final mode = await StorageService.loadThemeMode();
+    if (mounted) {
+      setState(() {
+        _themeMode = mode;
+      });
+    }
+  }
+
   void _setThemeMode(ThemeMode mode) {
     setState(() {
       _themeMode = mode;
     });
+    StorageService.saveThemeMode(mode);
   }
 
   @override
@@ -131,59 +149,84 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _showSegmentedProgressBar = true;
 
   // Dynamic Categories list initialized with defaults
-  late List<Category> _categories;
+  List<Category> _categories = Category.defaultCategories;
 
-  // Initial sample items
-  late List<Item> _items;
+  // Items list
+  List<Item> _items = [];
+
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _categories = Category.defaultCategories;
+    _loadSavedData();
+  }
 
-    final clothesCat = _categories.firstWhere((c) => c.id == 'clothes');
-    final devicesCat = _categories.firstWhere((c) => c.id == 'devices');
-    final fitnessCat = _categories.firstWhere((c) => c.id == 'fitness');
+  Future<void> _loadSavedData() async {
+    final loadedProgressBar = await StorageService.loadSegmentedProgressBar();
+    final loadedCategories = await StorageService.loadCategories();
+    final loadedItems = await StorageService.loadItems(loadedCategories);
 
-    _items = [
-      Item(
-        id: '1',
-        name: 'Smartphone',
-        price: 800.0,
-        category: devicesCat,
-        goalDurationMonths: 24,
-        usedDurationMonths: 26,
-        isDefaultUsed: enableDefaultAsUsedFeature,
-        usageStreak: 26,
-      ),
-      Item(
-        id: '2',
-        name: 'Winter Jacket',
-        price: 120.0,
-        category: clothesCat,
-        goalDurationMonths: 6,
-        usedDurationMonths: 4,
-        usageStreak: 4,
-      ),
-      Item(
-        id: '3',
-        name: 'Noise Cancelling Headphones',
-        price: 240.0,
-        category: devicesCat,
-        goalDurationMonths: 12,
-        usedDurationMonths: 12,
-        usageStreak: 12,
-      ),
-      Item(
-        id: '4',
-        name: 'Running Shoes',
-        price: 100.0,
-        category: fitnessCat,
-        goalDurationMonths: 5,
-        usedDurationMonths: 2,
-        usageStreak: 2,
-      ),
-    ];
+    if (!mounted) return;
+
+    setState(() {
+      _showSegmentedProgressBar = loadedProgressBar;
+      _categories = loadedCategories;
+
+      if (loadedItems != null) {
+        _items = loadedItems;
+      } else if (enableDefaultItemsOnFirstLaunch) {
+        // First launch sample items
+        final clothesCat = _categories.firstWhere((c) => c.id == 'clothes', orElse: () => _categories.first);
+        final devicesCat = _categories.firstWhere((c) => c.id == 'devices', orElse: () => _categories.first);
+        final fitnessCat = _categories.firstWhere((c) => c.id == 'fitness', orElse: () => _categories.first);
+
+        _items = [
+          Item(
+            id: '1',
+            name: 'Smartphone',
+            price: 800.0,
+            category: devicesCat,
+            goalDurationMonths: 24,
+            usedDurationMonths: 26,
+            isDefaultUsed: enableDefaultAsUsedFeature,
+            usageStreak: 26,
+          ),
+          Item(
+            id: '2',
+            name: 'Winter Jacket',
+            price: 120.0,
+            category: clothesCat,
+            goalDurationMonths: 6,
+            usedDurationMonths: 4,
+            usageStreak: 4,
+          ),
+          Item(
+            id: '3',
+            name: 'Noise Cancelling Headphones',
+            price: 240.0,
+            category: devicesCat,
+            goalDurationMonths: 12,
+            usedDurationMonths: 12,
+            usageStreak: 12,
+          ),
+          Item(
+            id: '4',
+            name: 'Running Shoes',
+            price: 100.0,
+            category: fitnessCat,
+            goalDurationMonths: 5,
+            usedDurationMonths: 2,
+            usageStreak: 2,
+          ),
+        ];
+        StorageService.saveItems(_items);
+      } else {
+        _items = [];
+        StorageService.saveItems(_items);
+      }
+      _isLoading = false;
+    });
   }
 
   String _searchQuery = '';
@@ -227,12 +270,14 @@ class _HomeScreenState extends State<HomeScreen> {
         _items.insert(newRealIndex, movedItem);
       }
     });
+    StorageService.saveItems(_items);
   }
 
   void _addCategory(Category cat) {
     setState(() {
       _categories.add(cat);
     });
+    StorageService.saveCategories(_categories);
   }
 
   void _updateCategory(Category updatedCat) {
@@ -248,6 +293,8 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
+    StorageService.saveCategories(_categories);
+    StorageService.saveItems(_items);
   }
 
   void _deleteCategory(String categoryId) {
@@ -265,6 +312,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _selectedCategoryFilter = null;
       }
     });
+    StorageService.saveCategories(_categories);
+    StorageService.saveItems(_items);
   }
 
   void _openCategoryManager() {
@@ -290,6 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() {
               _showSegmentedProgressBar = value;
             });
+            StorageService.saveSegmentedProgressBar(value);
           },
           onManageCategories: _openCategoryManager,
         ),
@@ -301,6 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _items.add(newItem);
     });
+    StorageService.saveItems(_items);
   }
 
   void _editItem(Item updatedItem) {
@@ -310,12 +361,14 @@ class _HomeScreenState extends State<HomeScreen> {
         _items[index] = updatedItem;
       }
     });
+    StorageService.saveItems(_items);
   }
 
   void _deleteItem(String id) {
     setState(() {
       _items.removeWhere((i) => i.id == id);
     });
+    StorageService.saveItems(_items);
   }
 
   void _handleReviewItem(Item item, bool used) {
@@ -368,6 +421,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _applyMonthlyStatusChange(_items[index], newStatus);
       }
     });
+    StorageService.saveItems(_items);
   }
 
   void _resetAllReviews() {
@@ -376,6 +430,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _applyMonthlyStatusChange(item, MonthlyReviewStatus.pending);
       }
     });
+    StorageService.saveItems(_items);
   }
 
   void _openAddDialog() {
@@ -423,6 +478,15 @@ class _HomeScreenState extends State<HomeScreen> {
     final theme = Theme.of(context);
     final filtered = _filteredItems;
     final pendingCount = _pendingReviewCount;
+
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: theme.colorScheme.surface,
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       extendBody: true,
