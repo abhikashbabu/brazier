@@ -20,12 +20,13 @@ Brazier is a privacy-first, open-source Android application built with Flutter t
 
 ## 📱 Screenshots
 
-|                          Items View                           | Monthly Review | Statistics Overview |
-|:-------------------------------------------------------------:|:---:|:---:|
-| ![Items view](/assets/screenshots/Brazier_items.png?raw=true) | *(Add screenshot)* | *(Add screenshot)* |
+|                          Items View                           |                               Monthly Review                                |                        Statistics Overview                         |
+|:-------------------------------------------------------------:|:---------------------------------------------------------------------------:|:------------------------------------------------------------------:|
+| ![Items view](/assets/screenshots/Brazier_items.png?raw=true) | ![Items view](/assets/screenshots/Brazier_monthly-review_used.png?raw=true) | ![Items view](/assets/screenshots/Brazier_statistics.png?raw=true) |
 
-![Items view](/assets/screenshots/Brazier_items_compact_light-mode.png?raw=true)
----
+//### Light theme
+//![Items view](/assets/screenshots/Brazier_items_compact_light-mode.png?raw=true)
+//---
 
 ## 🛠️ Building From Source
 
