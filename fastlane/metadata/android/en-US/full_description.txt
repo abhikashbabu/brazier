@@ -1,0 +1,12 @@
+Brazier helps you track the true monthly cost of your physical items and purchases over time.
+
+Instead of only looking at the initial purchase price, Brazier calculates how much an item actually costs you per month based on how long you have owned and used it.
+
+Key Features:
+• Item Cost Tracking: See both your target goal rate and your actual used cost per month.
+• Monthly Review Tab: Swipe items right (used) or left (not used) each month with smooth animations and tactile haptic feedback.
+• Usage Streak & Badges: Monitor consecutive months of usage and earn winstreak badges as items reach their cost targets.
+• Overview & Statistics: View total expenditure, average cost per item, goal completion rates, and winstreak rankings.
+• Custom Categories: Manage category icons, names, and custom colors.
+• Clean & Private: 100% offline, privacy-first, zero analytics, zero ads, and zero tracking. All data stays strictly on your device.
+• Material 3 Design: Full dark mode and adaptive modern UI.

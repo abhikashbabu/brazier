@@ -1,3 +1,5 @@
+// ignore_for_file: non_const_argument_for_const_parameter
+
 import 'package:flutter/material.dart';
 
 class Category {
@@ -36,6 +38,30 @@ class Category {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'displayName': displayName,
+      'iconCodePoint': icon.codePoint,
+      'iconFontFamily': icon.fontFamily,
+      'iconFontPackage': icon.fontPackage,
+      'colorValue': color.toARGB32(),
+    };
+  }
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      id: json['id'] as String,
+      displayName: json['displayName'] as String,
+      icon: IconData(
+        json['iconCodePoint'] as int,
+        fontFamily: json['iconFontFamily'] as String? ?? 'MaterialIcons',
+        fontPackage: json['iconFontPackage'] as String?,
+      ),
+      color: Color(json['colorValue'] as int),
+    );
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -48,6 +74,10 @@ class Category {
 /// Global feature toggle to enable or disable the "Default as Used" feature across the application.
 /// Set to `false` to disable the option in UI dialogs and auto-sync behavior, or `true` to enable it.
 const bool enableDefaultAsUsedFeature = false;
+
+/// Global feature toggle to enable or disable loading default sample items on first launch.
+/// Set to `false` for a clean empty state on launch, or `true` to populate initial sample items.
+const bool enableDefaultItemsOnFirstLaunch = false;
 
 enum MonthlyReviewStatus {
   pending,
@@ -165,6 +195,42 @@ class Item {
       currentMonthUsed: currentMonthUsed ?? this.currentMonthUsed,
       isDefaultUsed: isDefaultUsed ?? this.isDefaultUsed,
       usageStreak: usageStreak ?? this.usageStreak,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'categoryId': category.id,
+      'goalDurationMonths': goalDurationMonths,
+      'usedDurationMonths': usedDurationMonths,
+      'lastReviewedMonthKey': lastReviewedMonthKey,
+      'currentMonthUsed': currentMonthUsed,
+      'isDefaultUsed': isDefaultUsed,
+      'usageStreak': usageStreak,
+    };
+  }
+
+  factory Item.fromJson(Map<String, dynamic> json, List<Category> categories) {
+    final catId = json['categoryId'] as String?;
+    final foundCategory = categories.firstWhere(
+      (c) => c.id == catId,
+      orElse: () => categories.isNotEmpty ? categories.first : Category.defaultCategories.first,
+    );
+
+    return Item(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      price: (json['price'] as num).toDouble(),
+      category: foundCategory,
+      goalDurationMonths: json['goalDurationMonths'] as int? ?? 12,
+      usedDurationMonths: json['usedDurationMonths'] as int? ?? 0,
+      lastReviewedMonthKey: json['lastReviewedMonthKey'] as String?,
+      currentMonthUsed: json['currentMonthUsed'] as bool?,
+      isDefaultUsed: json['isDefaultUsed'] as bool? ?? false,
+      usageStreak: json['usageStreak'] as int? ?? 0,
     );
   }
 }
