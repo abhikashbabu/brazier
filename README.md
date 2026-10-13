@@ -20,9 +20,9 @@ Brazier is a privacy-first, open-source Android application built with Flutter t
 
 ## 📱 Screenshots
 
-| Items View | Monthly Review | Statistics Overview |
-|:---:|:---:|:---:|
-| *(Add screenshot)* | *(Add screenshot)* | *(Add screenshot)* |
+|                                               Items View                                                | Monthly Review | Statistics Overview |
+|:-------------------------------------------------------------------------------------------------------:|:---:|:---:|
+| <img src:"https://raw.githubusercontent.com/pentakore/brazier/blob/theme/assets/app%20screenshots/Brazier_items.png" width="30%"> | *(Add screenshot)* | *(Add screenshot)* |
 
 ---
 
@@ -44,16 +44,12 @@ The compiled APK will be located at:
 
 ---
 
-## 📦 F-Droid Submission
+## 📦 F-Droid
 
 Brazier is built to comply strictly with [F-Droid Inclusion Policy](https://f-droid.org/docs/Inclusion_Policy/):
 - **100% Free and Open Source Software (FOSS)**
 - **No Proprietary Dependencies**: Free of Google Play Services, Firebase, or non-free SDKs.
 - **No Anti-Features**: Zero ads, zero tracking, zero telemetry.
-
-To submit Brazier to the official F-Droid repository:
-1. Ensure your code is pushed to a public Git host (e.g. GitHub/GitLab).
-2. Open a Merge Request against [fdroiddata](https://gitlab.com/fdroid/fdroiddata) with a build recipe referencing this repository.
 
 ---
 
