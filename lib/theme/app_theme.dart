@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static const String funnelDisplayFont = 'Funnel Display';
+  static const String ralewayFont = 'Raleway';
 
   /// Builds the application TextTheme using Funnel Display for big text and titles,
   /// and Raleway for all other text (body, labels, captions, buttons, etc.).
   static TextTheme createTextTheme(TextTheme baseTextTheme) {
     // 1. Raleway for base text theme (body, labels, etc.)
-    final ralewayTheme = GoogleFonts.ralewayTextTheme(baseTextTheme);
+    final ralewayTheme = baseTextTheme.apply(
+      fontFamily: ralewayFont,
+    );
 
     // 2. Helper to apply Funnel Display font to title & big text styles
     TextStyle applyFunnelDisplay(TextStyle? original) {
       if (original == null) {
         return const TextStyle(
           fontFamily: funnelDisplayFont,
-          fontFamilyFallback: ['Raleway', 'sans-serif'],
+          fontFamilyFallback: [ralewayFont, 'sans-serif'],
         );
       }
       return original.copyWith(
         fontFamily: funnelDisplayFont,
-        fontFamilyFallback: [
-          if (ralewayTheme.bodyMedium?.fontFamily != null)
-            ralewayTheme.bodyMedium!.fontFamily!,
-          'Raleway',
+        fontFamilyFallback: const [
+          ralewayFont,
           'sans-serif',
         ],
       );
@@ -56,7 +56,7 @@ class AppTheme {
     final base = style ?? const TextStyle();
     return base.copyWith(
       fontFamily: funnelDisplayFont,
-      fontFamilyFallback: const ['Raleway', 'sans-serif'],
+      fontFamilyFallback: const [ralewayFont, 'sans-serif'],
       color: color,
       fontSize: fontSize,
       fontWeight: fontWeight,
@@ -72,8 +72,9 @@ class AppTheme {
     FontWeight? fontWeight,
     double? letterSpacing,
   }) {
-    return GoogleFonts.raleway(
-      textStyle: style,
+    final base = style ?? const TextStyle();
+    return base.copyWith(
+      fontFamily: ralewayFont,
       color: color,
       fontSize: fontSize,
       fontWeight: fontWeight,
