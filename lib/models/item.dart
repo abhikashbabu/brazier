@@ -49,15 +49,46 @@ class Category {
     };
   }
 
+  static const List<IconData> availableIcons = [
+    Icons.checkroom,
+    Icons.devices,
+    Icons.home,
+    Icons.menu_book,
+    Icons.directions_car,
+    Icons.sports_esports,
+    Icons.fitness_center,
+    Icons.category,
+    Icons.shopping_bag,
+    Icons.phone_iphone,
+    Icons.laptop,
+    Icons.headset,
+    Icons.chair,
+    Icons.watch,
+    Icons.camera_alt,
+    Icons.kitchen,
+    Icons.palette,
+    Icons.build,
+    Icons.flight,
+    Icons.local_grocery_store,
+    Icons.fastfood,
+    Icons.pets,
+    Icons.music_note,
+    Icons.content_cut,
+  ];
+
+  static IconData getIconFromCodePoint(int? codePoint) {
+    if (codePoint == null) return Icons.category;
+    return availableIcons.firstWhere(
+      (icon) => icon.codePoint == codePoint,
+      orElse: () => Icons.category,
+    );
+  }
+
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
       id: json['id'] as String,
       displayName: json['displayName'] as String,
-      icon: IconData(
-        json['iconCodePoint'] as int,
-        fontFamily: json['iconFontFamily'] as String? ?? 'MaterialIcons',
-        fontPackage: json['iconFontPackage'] as String?,
-      ),
+      icon: getIconFromCodePoint(json['iconCodePoint'] as int?),
       color: Color(json['colorValue'] as int),
     );
   }

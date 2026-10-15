@@ -158,32 +158,7 @@ class _CategoryEditDialogState extends State<CategoryEditDialog> {
   late IconData _selectedIcon;
   late Color _selectedColor;
 
-  static const List<IconData> _availableIcons = [
-    Icons.checkroom,
-    Icons.devices,
-    Icons.home,
-    Icons.menu_book,
-    Icons.directions_car,
-    Icons.sports_esports,
-    Icons.fitness_center,
-    Icons.category,
-    Icons.shopping_bag,
-    Icons.phone_iphone,
-    Icons.laptop,
-    Icons.headset,
-    Icons.chair,
-    Icons.watch,
-    Icons.camera_alt,
-    Icons.kitchen,
-    Icons.palette,
-    Icons.build,
-    Icons.flight,
-    Icons.local_grocery_store,
-    Icons.fastfood,
-    Icons.pets,
-    Icons.music_note,
-    Icons.content_cut,
-  ];
+  static List<IconData> get _availableIcons => Category.availableIcons;
 
   static const List<Color> _availableColors = [
     Colors.purple,
