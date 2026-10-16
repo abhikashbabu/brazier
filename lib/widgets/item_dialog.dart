@@ -311,6 +311,7 @@ class _ItemDialogState extends State<ItemDialog> {
 
                       // Duration section
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Goal duration
                           Expanded(
@@ -319,6 +320,9 @@ class _ItemDialogState extends State<ItemDialog> {
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
                                 labelText: 'Goal Duration',
+                                helperText: 'how long you want to keep the item.',
+                                helperStyle: TextStyle(fontStyle: FontStyle.italic),
+                                helperMaxLines: 2,
                                 suffixText: 'months',
                                 prefixIcon: Icon(Icons.flag_outlined),
                                 border: OutlineInputBorder(),
@@ -343,6 +347,9 @@ class _ItemDialogState extends State<ItemDialog> {
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
                                 labelText: 'Used Duration',
+                                helperText: 'how long you already used the item.', //below the text box
+                                helperStyle: TextStyle(fontStyle: FontStyle.italic),
+                                helperMaxLines: 2,
                                 suffixText: 'months',
                                 prefixIcon: Icon(Icons.history),
                                 border: OutlineInputBorder(),
