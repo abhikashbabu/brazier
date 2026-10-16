@@ -381,7 +381,7 @@ class _ItemDialogState extends State<ItemDialog> {
                           contentPadding: EdgeInsets.zero,
                           activeColor: theme.colorScheme.primary,
                           title: const Text(
-                            'Default as used every month',
+                            'Default as used every month', //below the text box
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                           ),
                           subtitle: Text(
