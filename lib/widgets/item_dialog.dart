@@ -347,7 +347,7 @@ class _ItemDialogState extends State<ItemDialog> {
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
                                 labelText: 'Used Duration',
-                                helperText: 'how long you already used the item.', //below the text box
+                                helperText: 'how long you already used the item.',
                                 helperStyle: TextStyle(fontStyle: FontStyle.italic),
                                 helperMaxLines: 2,
                                 suffixText: 'months',
@@ -381,7 +381,7 @@ class _ItemDialogState extends State<ItemDialog> {
                           contentPadding: EdgeInsets.zero,
                           activeColor: theme.colorScheme.primary,
                           title: const Text(
-                            'Default as used every month', //below the text box
+                            'Default as used every month',
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                           ),
                           subtitle: Text(
