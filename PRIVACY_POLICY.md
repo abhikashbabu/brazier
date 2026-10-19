@@ -70,7 +70,7 @@ Brazier requests zero sensitive system permissions. It does not request access t
 
 ## 7. Changes to This Privacy Policy
 
-We may update this Privacy Policy from time to time. Any changes will be posted with an updated "Last Updated" date at the top of this document. Since Brazier does not collect user contact information, you are encouraged to review this Privacy Policy periodically.
+This Privacy Policy might be updated from time to time. Any changes will be posted with an updated "Last Updated" date at the top of this document. Since Brazier does not collect user contact information, you are encouraged to review this Privacy Policy periodically.
 
 ---
 
