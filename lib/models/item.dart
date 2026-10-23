@@ -108,7 +108,7 @@ const bool enableDefaultAsUsedFeature = false;
 
 /// Global feature toggle to enable or disable loading default sample items on first launch.
 /// Set to `false` for a clean empty state on launch, or `true` to populate initial sample items.
-const bool enableDefaultItemsOnFirstLaunch = true;
+const bool enableDefaultItemsOnFirstLaunch = false;
 
 enum MonthlyReviewStatus {
   pending,
