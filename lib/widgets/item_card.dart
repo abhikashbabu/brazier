@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/currency.dart';
 import '../models/item.dart';
 import '../theme/app_theme.dart';
 
@@ -156,6 +157,7 @@ class ItemCard extends StatelessWidget {
   final VoidCallback onDelete;
   final ValueChanged<MonthlyReviewStatus> onUpdateMonthlyStatus;
   final bool showSegmentedProgressBar;
+  final Currency currency;
 
   const ItemCard({
     super.key,
@@ -164,6 +166,7 @@ class ItemCard extends StatelessWidget {
     required this.onDelete,
     required this.onUpdateMonthlyStatus,
     this.showSegmentedProgressBar = true,
+    this.currency = Currency.euro,
   });
 
   @override
@@ -473,7 +476,7 @@ class ItemCard extends StatelessWidget {
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        '${item.price.toStringAsFixed(2)} €',
+                        currency.format(item.price),
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w800,
                           fontSize: 17,
@@ -523,7 +526,7 @@ class ItemCard extends StatelessWidget {
                               fit: BoxFit.scaleDown,
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                '${item.goalPricePerMonth.toStringAsFixed(2)} € / mo',
+                                currency.formatMonthly(item.goalPricePerMonth),
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
@@ -571,7 +574,7 @@ class ItemCard extends StatelessWidget {
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 item.usedDurationMonths > 0
-                                    ? '${item.usedPricePerMonth.toStringAsFixed(2)} € / mo'
+                                    ? currency.formatMonthly(item.usedPricePerMonth)
                                     : 'N/A',
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
@@ -644,6 +647,7 @@ class CompactItemCard extends StatelessWidget {
   final VoidCallback onDelete;
   final ValueChanged<MonthlyReviewStatus> onUpdateMonthlyStatus;
   final bool showSegmentedProgressBar;
+  final Currency currency;
 
   const CompactItemCard({
     super.key,
@@ -652,6 +656,7 @@ class CompactItemCard extends StatelessWidget {
     required this.onDelete,
     required this.onUpdateMonthlyStatus,
     this.showSegmentedProgressBar = true,
+    this.currency = Currency.euro,
   });
 
   @override
@@ -834,7 +839,7 @@ class CompactItemCard extends StatelessWidget {
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    '${item.price.toStringAsFixed(2)} €',
+                    currency.format(item.price),
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -890,7 +895,7 @@ class CompactItemCard extends StatelessWidget {
                     // Used Price per Month
                     Text(
                       item.usedDurationMonths > 0
-                          ? '${item.usedPricePerMonth.toStringAsFixed(2)} €/mo'
+                          ? currency.formatMonthly(item.usedPricePerMonth, compact: true)
                           : 'N/A',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.bold,

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+import '../models/currency.dart';
 import '../models/item.dart';
 import '../theme/app_theme.dart';
 
@@ -63,12 +64,14 @@ class ItemsDetailScreen extends StatelessWidget {
   final String title;
   final List<Item> items;
   final Category? category;
+  final Currency currency;
 
   const ItemsDetailScreen({
     super.key,
     required this.title,
     required this.items,
     this.category,
+    this.currency = Currency.euro,
   });
 
   @override
@@ -206,7 +209,7 @@ class ItemsDetailScreen extends StatelessWidget {
                                   top: 0,
                                   child: Tooltip(
                                     message:
-                                    'Target Goal (${item.goalDurationMonths} mo): ${item.goalPricePerMonth.toStringAsFixed(2)} €/mo',
+                                    'Target Goal (${item.goalDurationMonths} mo): ${currency.formatMonthly(item.goalPricePerMonth, compact: true)}',
                                     child: Container(
                                       width: 8,
                                       height: 8,
@@ -266,7 +269,7 @@ class ItemsDetailScreen extends StatelessWidget {
                           _MetricRow(
                             compact: compact,
                             label: 'Total Price:',
-                            value: '${item.price.toStringAsFixed(2)} €',
+                            value: currency.format(item.price),
                             labelStyle: labelStyle,
                             valueStyle: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -281,8 +284,8 @@ class ItemsDetailScreen extends StatelessWidget {
                             compact: compact,
                             label: 'Monthly Cost:',
                             value: item.usedDurationMonths > 0
-                                ? '${item.usedPricePerMonth.toStringAsFixed(2)} €/mo'
-                                : '${item.goalPricePerMonth.toStringAsFixed(2)} €/mo',
+                                ? currency.formatMonthly(item.usedPricePerMonth, compact: true)
+                                : currency.formatMonthly(item.goalPricePerMonth, compact: true),
                             labelStyle: labelStyle,
                             valueStyle: TextStyle(
                               fontWeight: FontWeight.bold,
