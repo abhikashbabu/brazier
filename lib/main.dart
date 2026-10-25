@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+import 'models/currency.dart';
 import 'models/item.dart';
 import 'services/storage_service.dart';
 import 'theme/app_theme.dart';
@@ -147,6 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Display preferences
   bool _showSegmentedProgressBar = true;
+  Currency _currency = Currency.euro;
 
   // Dynamic Categories list initialized with defaults
   List<Category> _categories = Category.defaultCategories;
@@ -164,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadSavedData() async {
     final loadedProgressBar = await StorageService.loadSegmentedProgressBar();
+    final loadedCurrency = await StorageService.loadCurrency();
     final loadedCategories = await StorageService.loadCategories();
     final loadedItems = await StorageService.loadItems(loadedCategories);
 
@@ -171,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       _showSegmentedProgressBar = loadedProgressBar;
+      _currency = loadedCurrency;
       _categories = loadedCategories;
 
       if (loadedItems != null) {
@@ -341,6 +345,13 @@ class _HomeScreenState extends State<HomeScreen> {
             });
             StorageService.saveSegmentedProgressBar(value);
           },
+          currency: _currency,
+          onCurrencyChanged: (currency) {
+            setState(() {
+              _currency = currency;
+            });
+            StorageService.saveCurrency(currency);
+          },
           onManageCategories: _openCategoryManager,
         ),
       ),
@@ -438,6 +449,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (context) => ItemDialog(
         categories: _categories,
+        currency: _currency,
         onSave: _addItem,
         onAddCategory: _addCategory,
         onUpdateCategory: _updateCategory,
@@ -452,6 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) => ItemDialog(
         item: item,
         categories: _categories,
+        currency: _currency,
         onSave: _editItem,
         onAddCategory: _addCategory,
         onUpdateCategory: _updateCategory,
@@ -546,6 +559,7 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedCategoryFilter: _selectedCategoryFilter,
               showOnlyGoalReached: _showOnlyGoalReached,
               showSegmentedProgressBar: _showSegmentedProgressBar,
+              currency: _currency,
               onSearchQueryChanged: (query) {
                 setState(() {
                   _searchQuery = query;
@@ -570,12 +584,16 @@ class _HomeScreenState extends State<HomeScreen> {
             // TAB 1: Monthly Review View
             ReviewView(
               items: _items,
+              currency: _currency,
               onReviewItem: _handleReviewItem,
               onResetAllReviews: _resetAllReviews,
             ),
 
             // TAB 2: Statistics View
-            StatisticsView(items: _items),
+            StatisticsView(
+              items: _items,
+              currency: _currency,
+            ),
           ],
         ),
       ),

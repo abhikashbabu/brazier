@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../models/currency.dart';
 import '../models/item.dart';
 import 'category_manager_dialog.dart';
 
 class ItemDialog extends StatefulWidget {
   final Item? item;
   final List<Category> categories;
+  final Currency currency;
   final ValueChanged<Item> onSave;
   final ValueChanged<Category>? onAddCategory;
   final ValueChanged<Category>? onUpdateCategory;
@@ -15,6 +17,7 @@ class ItemDialog extends StatefulWidget {
     super.key,
     this.item,
     required this.categories,
+    this.currency = Currency.euro,
     required this.onSave,
     this.onAddCategory,
     this.onUpdateCategory,
@@ -229,11 +232,11 @@ class _ItemDialogState extends State<ItemDialog> {
                       TextFormField(
                         controller: _priceController,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        decoration: const InputDecoration(
-                          labelText: 'Price (€)',
+                        decoration: InputDecoration(
+                          labelText: 'Price (${widget.currency.symbol})',
                           hintText: 'e.g., 100.00',
-                          prefixIcon: Icon(Icons.euro),
-                          border: OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.money),
+                          border: const OutlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -446,7 +449,7 @@ class _ItemDialogState extends State<ItemDialog> {
                                   style: theme.textTheme.bodyMedium,
                                 ),
                                 Text(
-                                  '${_goalPricePerMonth.toStringAsFixed(2)} €/mo',
+                                  widget.currency.formatMonthly(_goalPricePerMonth, compact: true),
                                   style: theme.textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: theme.colorScheme.primary,
@@ -464,7 +467,7 @@ class _ItemDialogState extends State<ItemDialog> {
                                 ),
                                 Text(
                                   _currentUsedDuration > 0
-                                      ? '${_usedPricePerMonth.toStringAsFixed(2)} €/mo'
+                                      ? widget.currency.formatMonthly(_usedPricePerMonth, compact: true)
                                       : 'N/A (0 months)',
                                   style: theme.textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.bold,

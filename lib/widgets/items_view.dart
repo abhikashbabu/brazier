@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../models/currency.dart';
 import '../models/item.dart';
 import 'item_card.dart';
 
@@ -13,6 +14,7 @@ class ItemsView extends StatefulWidget {
   final Category? selectedCategoryFilter;
   final bool showOnlyGoalReached;
   final bool showSegmentedProgressBar;
+  final Currency currency;
   final ValueChanged<String> onSearchQueryChanged;
   final ValueChanged<Category?> onCategoryFilterChanged;
   final ValueChanged<bool> onGoalFilterChanged;
@@ -29,6 +31,7 @@ class ItemsView extends StatefulWidget {
     required this.selectedCategoryFilter,
     required this.showOnlyGoalReached,
     this.showSegmentedProgressBar = true,
+    this.currency = Currency.euro,
     required this.onSearchQueryChanged,
     required this.onCategoryFilterChanged,
     required this.onGoalFilterChanged,
@@ -50,6 +53,7 @@ class _ItemsViewState extends State<ItemsView> {
         ? CompactItemCard(
             item: item,
             showSegmentedProgressBar: widget.showSegmentedProgressBar,
+            currency: widget.currency,
             onEdit: () => widget.onEditItem(item),
             onDelete: () => widget.onDeleteItem(item.id),
             onUpdateMonthlyStatus: (newStatus) =>
@@ -58,6 +62,7 @@ class _ItemsViewState extends State<ItemsView> {
         : ItemCard(
             item: item,
             showSegmentedProgressBar: widget.showSegmentedProgressBar,
+            currency: widget.currency,
             onEdit: () => widget.onEditItem(item),
             onDelete: () => widget.onDeleteItem(item.id),
             onUpdateMonthlyStatus: (newStatus) =>

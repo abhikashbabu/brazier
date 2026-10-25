@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../models/currency.dart';
 import '../models/item.dart';
 
 class SummaryCard extends StatelessWidget {
   final List<Item> items;
+  final Currency currency;
   final VoidCallback? onTap;
 
   const SummaryCard({
     super.key,
     required this.items,
+    this.currency = Currency.euro,
     this.onTap,
   });
 
@@ -106,7 +109,7 @@ class SummaryCard extends StatelessWidget {
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
             child: Text(
-              '${totalSpent.toStringAsFixed(2)} €',
+              currency.format(totalSpent),
               style: theme.textTheme.headlineMedium?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
@@ -144,7 +147,7 @@ class SummaryCard extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '${totalGoalPerMonth.toStringAsFixed(2)} € / mo',
+                        currency.formatMonthly(totalGoalPerMonth),
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -178,7 +181,7 @@ class SummaryCard extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '${totalUsedPerMonth.toStringAsFixed(2)} € / mo',
+                        currency.formatMonthly(totalUsedPerMonth),
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
